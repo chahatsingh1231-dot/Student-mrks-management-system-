@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Management System</title>
+<style>
+body{font-family:Arial;background:#eef2ff;text-align:center;padding:20px}
+.box{background:white;padding:20px;border-radius:12px;max-width:900px;margin:auto}
+input,button{padding:10px;margin:5px;border:1px solid #ccc;border-radius:5px}
+button{background:#3157d5;color:white;cursor:pointer}
+table{width:100%;margin-top:20px;border-collapse:collapse}
+th,td{padding:10px;border:1px solid #ddd}
+th{background:#3157d5;color:white}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Student Management & Marks System</h2>
+
+<form id="f">
+<input id="n" placeholder="Student Name" required>
+<input id="r" placeholder="Roll Number" required>
+<input id="m1" type="number" placeholder="Subject 1" min="0" max="100" required>
+<input id="m2" type="number" placeholder="Subject 2" min="0" max="100" required>
+<input id="m3" type="number" placeholder="Subject 3" min="0" max="100" required>
+<button>Add Student</button>
+</form>
+
+<input id="search" placeholder="Search student..." oninput="show()">
+<table>
+<thead><tr><th>Name</th><th>Roll</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th><th>Action</th></tr></thead>
+<tbody id="t"></tbody>
+</table>
+<p id="count">Total Students: 0</p>
+</div>
+
+<script>
+let students=[];
+f.onsubmit=e=>{
+e.preventDefault();
+if(students.some(s=>s.r===r.value.trim()))return alert("Roll number already exists!");
+let a=+m1.value,b=+m2.value,c=+m3.value;
+let p=(a+b+c)/3,pass=[a,b,c].every(x=>x>=35);
+students.push({n:n.value,r:r.value.trim(),total:a+b+c,p,
+grade:!pass?"F":p>=90?"A+":p>=80?"A":p>=70?"B":p>=60?"C":p>=50?"D":"E",
+result:pass?"Pass":"Fail"});
+f.reset();show();
+};
+function show(){
+t.innerHTML="";
+students.filter(s=>(s.n+" "+s.r).toLowerCase().includes(search.value.toLowerCase())).forEach((s,i)=>{
+t.innerHTML+=`<tr><td>${s.n}</td><td>${s.r}</td><td>${s.total}/300</td><td>${s.p.toFixed(1)}%</td><td>${s.grade}</td><td>${s.result}</td><td><button onclick="del('${s.r}')">Delete</button></td></tr>`;
+});
+count.innerText="Total Students: "+students.length;
+}
+function del(r){students=students.filter(s=>s.r!==r);show()}
+</script>
+</body>
+</html>
